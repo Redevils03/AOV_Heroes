@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        .card-img-top{
+            width: 100%;
+            height: 15vw;
+            object-fit: cover;
+        }
+
+        .form {
+            position: relative
+        }
+        
+        .form .fa-search {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            color: gray
+        }
+
+        .form-input {
+            height: 40px;
+            text-indent: 33px;
+            border-radius: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .container-fluid {
+            padding-left: 65px;
+            padding-right: 65px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+        .form-select:focus {
+            box-shadow: none;
+        }
+
+        .wajib:after {
+            content:" *";
+            color: red;
+        }
+
+        a, a:link, a:visited {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo {
+            margin-left: 6vw;
+            line-height: 0;
+        }
+
+        #navbar {
+            color: #fff;
+            background-color: rgba(0,0,0,.9);
+            height: 70px;
+        }
+
+        .download {
+            display: inline-flex;
+            align-items: flex-end;
+            right: 0;
+        }
+
+        .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+            background-color: #b67843 !important;
+            border-color: #b67843;
+        }
+    </style>
+    <title>Arena of Valor Heroes</title>
+</head>
+
+<body>
+    <!-- Navbar Atas -->
+    <nav class="navbar d-flex" style="background-color: rgba(0,0,0,.9); color: white;">
+        <img src="logo.png" class="d-inline-block align-top" alt="Logo" style="margin-left: 40px;">
+        <h4 style="display: inline-flex; margin-left: 35px;"><b>Heroes</b></h4>
+        <div class="flex-fill d-none d-md-block" style="margin-left: 40px;">
+            <div class="form">
+                <form> <i class="fa fa-search"></i><input type="text" class="form-control form-input" placeholder="Search Hero Names" id="cari"></form> 
+            </div>
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.ngame.allstar.eu&hl=in&gl=US" style="margin-left: 40px; margin-right: 40px;"><img src="download.jpg" alt="Download" height="60"></a>  
+    </nav>
+    
+    <div class="mb-4">
+        <img src="background.jpg" style="max-width: 100%; height: 40%;">
+    </div>
+    
+    <div class="container-fluid mb-4">
+        <div class="float-end d-flex">
+            <form>
+                <select class="form-select" id="sort" onChange="update()">
+                    <option value="ASC" disabled selected hidden>Sort Hero Names</option>
+                    <option value="ASC">A to Z</option>
+                    <option value="DESC">Z to A</option>
+                </select>
+            </form>
+            <button id="submit" type="button" class="btn btn-primary shadow-none">Sort</button>
+        </div>
+        <a href="form.html" class="btn btn-primary text-white"><i class="bi bi-plus"></i> New Hero</a>
+        <button id="targetId" class="btn btn-primary"><i class="bi bi-question-lg"></i></button>
+        <script>
+            $( "#targetId" ).click(function() {
+                alert( "Klik Nama Hero Untuk Melihat Detailnya!" );
+            });
+        </script>
+    </div>
+
+    <nav style="margin-bottom: 30px;">
+        <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist" style="text-align: center;"> 
+            <a class="nav-item nav-link active" id="nav-NFT-tab" data-toggle="tab" href="#" role="tab" style="color: #b67843;"><h5 class="fw-bold">All</h5></a>
+        </div>
+    </nav>
+
+    <!-- Pembuatan kartu daftar produk -->
+    <div class="container-fluid">
+        <div class="row justify-content-center mt-4" id="data_show">
+        </div>
+        <div class="col-12 d-grid">
+            <button id="data_load" type="button" class="btn btn-primary shadow-none"><i class="bi bi-arrow-down-circle-fill"></i> Load More</button>
+        </div>
+    </div>
+    
+    <!-- Pembuatan footer dan navbar bawah -->
+    <footer>
+        <nav class="navbar footer mt-5" style="background-color: rgba(0,0,0,.9); color: white;">
+            <!-- karena ada karakter unik &copy perlu span agar bisa berubah jadi simbol -->
+            <span class="navbar-text mx-auto text-center"> 
+                &copy Copyright 2022 | Kelompok C7
+                <p>Ikang Tanoto - 202410103018 | Martin Chandra - 202410103032 | Vito Chandra - 202410103089</p>
+            </span>
+        </nav>
+    </footer>
+    
+    <!-- Pembuatan fungsi-fungsi tambahan -->
+    <script>
+        var jumlah  = 0;
+
+        $("#submit").click( function () {
+            jumlah = 9;
+        });
+        $(document).ready(function () {
+            $.get("role.php", function (response) {
+                $.each(response, function (key, value) {
+                    $("#nav-tab").append("<a class='nav-item nav-link' id='nav-Home-tab' data-toggle='tab' href='#'' role='tab'  style='color: rgb(63, 63, 63);'><h5 class='fw-bold'>"+ value.role_name +"</h5></a>");
+                });
+            });
+
+            $("#data_load").click(function() {
+                console.log('test');
+                var select = document.getElementById('sort');
+                var value = select.options[select.selectedIndex].value;
+
+                $.get("hero.php?action=read&sort="+ value +"&begin=" + jumlah, function(response) {
+                    $.each(response, function(key, value) {
+                        $("#data_show").append("<div class='col-12 col-md-6 col-lg-3 col-xxl-2'>" +
+                                "<div class='card mb-4' style='width:250px;'>" +
+                                    "<img class='card-img-top' src='./img/" + value.id_hero + ".jpg' style='object-fit:cover; object-position:center; width:auto; height:300px;'>" +
+                                    "<div class='card-body'>" +
+                                        "<a href='detail_hero.html?action=detail&id_hero="+ value.id_hero +"'><h5 class='card-title'>"+ value.nama_hero +"</h5></a>" +
+                                        "<p class='card-text'>" +
+                                            "<div class='float-end'>" +
+                                                "<a href='form.html?action=update&id_hero="+ value.id_hero +"' class='btn btn-success btn-sm' style='margin-right: 5px; color: white;'><i class='bi bi-pencil-square'></i></a>" +
+                                                "<a href='hero.php?action=delete&id_hero="+ value.id_hero +"' class='btn btn-danger btn-sm' style='color: white;'><i class='bi bi-trash3-fill'></i></a>" +
+                                            "</div>"+ 
+                                        "</p>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>");
+                    });
+                    jumlah += 9;
+                });
+            }).trigger("click");
+        });
+    </script>
+
+    <script src="search.js"></script>
+    <script src="sort.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/9784a2957b.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
